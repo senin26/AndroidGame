@@ -16,8 +16,10 @@ public class MenuScreen extends Base2DScreen{
 
     Vector2 pos;
     Vector2 v;
-    float boundX; // Gdx.graphics.getWidth()
-    float boundY; // Gdx.graphics.getHeight()
+    float boundX;
+    float boundY;
+    int imgWidth = 128;
+    int imgHeight = 128;
 
     @Override
     public void show() {
@@ -25,10 +27,8 @@ public class MenuScreen extends Base2DScreen{
         batch = new SpriteBatch();
         background = new Texture("background.jpg");
         img = new Texture("cat.jpg");
-        //img = new Texture("don.jpg");
         pos = new Vector2(0, 0);
         v = new Vector2();
-        //v = new Vector2(1,1);
     }
 
     @Override
@@ -41,22 +41,8 @@ public class MenuScreen extends Base2DScreen{
         batch.draw(img, pos.x, pos.y);
         batch.end();
 
-       /* if (Gdx.input.getInputProcessor().keyUp(19)) {
-            pos.add(0,v.y);
-        }
-        if (Gdx.input.getInputProcessor().keyUp(20)) {
-            pos.add(0,-v.y);
-        }
-        else if (Gdx.input.getInputProcessor().keyUp(21)){
-            pos.add(-v.x,0);
-        }
-        else if (Gdx.input.getInputProcessor().keyUp(22)) {
-            pos.add(v.x,0);
-        }*/
-
-
-        if ((Gdx.graphics.getWidth() - 128) > pos.x && (Gdx.graphics.getHeight() - 128) > pos.y) {
-            if (Math.abs(boundX-(pos.x))>0.5 && Math.abs(boundY-(pos.y))>0.5){
+        if ((Gdx.graphics.getWidth() - imgWidth) > pos.x && (Gdx.graphics.getHeight() - imgHeight) > pos.y) {
+            if ( ((boundX-pos.x)>0.5 || (boundX-pos.x)<-0.5) && ((boundY-pos.y>0.5) || (boundY-pos.y)<-0.5) ) {
                 pos.add(v);
             }
         }
@@ -85,9 +71,8 @@ public class MenuScreen extends Base2DScreen{
     }
 
     void setV(float x0, float x, float y0, float y){
-        double phi;
-        float dx = x-x0-64;
-        float dy = y-y0-64;
+        float dx = x-x0;
+        float dy = y-y0;
         float len = (float) Math.sqrt(dx*dx + dy*dy);
         float cos;
         float sin;
@@ -97,8 +82,7 @@ public class MenuScreen extends Base2DScreen{
         if (dy<0){
             sin = -dy/len;
         } else sin = dy/len;
-
-        v = v.set(Math.signum(dx)*cos, Math.signum(dy)*sin);
+        v = v.set(Math.signum(dx)*cos*2, Math.signum(dy)*sin*2);
     }
 
 
