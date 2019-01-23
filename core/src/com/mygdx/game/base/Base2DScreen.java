@@ -36,6 +36,15 @@ public class Base2DScreen implements Screen, InputProcessor {
         this.worldToGl = new Matrix4();
         this.screenToWorlds = new Matrix3();
         touch = new Vector2();
+
+
+
+public class Base2DScreen implements Screen, InputProcessor {
+    @Override
+    public void show() {
+        System.out.println("show");
+        Gdx.input.setInputProcessor(this);  //todo why?
+
     }
 
     @Override
@@ -46,6 +55,7 @@ public class Base2DScreen implements Screen, InputProcessor {
     @Override
     public void resize(int width, int height) {
         System.out.println("resize w = " + width + " h = " + height);
+
         screenBounds.setSize(width, height);
         screenBounds.setLeft(0);
         screenBounds.setBottom(0);
@@ -57,6 +67,7 @@ public class Base2DScreen implements Screen, InputProcessor {
         MatrixUtils.calcTransitionMatrix(worldToGl, worldBounds, glBounds);
         batch.setProjectionMatrix(worldToGl);
         MatrixUtils.calcTransitionMatrix(screenToWorlds, screenBounds, worldBounds);
+
     }
 
     @Override
@@ -78,7 +89,9 @@ public class Base2DScreen implements Screen, InputProcessor {
     @Override
     public void dispose() {
         System.out.println("dispose");
+
         batch.dispose();
+
     }
 
 
@@ -103,6 +116,7 @@ public class Base2DScreen implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         System.out.println("touchDown screenX = " + screenX + " screenY = " + screenY);
+
         touch.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorlds);
         touchDown(touch, pointer);
         return false;
@@ -110,12 +124,15 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     public boolean touchDown(Vector2 touch, int pointer) {
         System.out.println("touchDown touch.x = " + touch.x + " touch.y = " + touch.y);
+
+
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         System.out.println("touchUp screenX = " + screenX + " screenY = " + screenY);
+
         touch.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorlds);
         touchUp(touch, pointer);
         return false;
@@ -129,6 +146,7 @@ public class Base2DScreen implements Screen, InputProcessor {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         System.out.println("touchDragged screenX = " + screenX + " screenY = " + screenY);
+
         touch.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorlds);
         touchDragged(touch, pointer);
         return false;
@@ -148,4 +166,9 @@ public class Base2DScreen implements Screen, InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
 }
+
+
+}
+
