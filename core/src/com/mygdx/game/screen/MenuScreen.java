@@ -3,7 +3,6 @@ package com.mygdx.game.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import com.mygdx.game.base.Base2DScreen;
@@ -43,10 +42,12 @@ public class MenuScreen extends Base2DScreen{
         batch.draw(img, pos.x, pos.y, 0.25f, 0.25f);
         batch.end();
         posTemp.set(touch);
-        if ( ((posTemp.x-pos.x)>V_LEN || (posTemp.x-pos.x)<-V_LEN) && ((posTemp.y-pos.y>V_LEN) || (posTemp.y-pos.y)<-V_LEN) ) {
+
+        if ( ((posTemp.x-pos.x)>V_LEN || (posTemp.x-pos.x)<-V_LEN) || ((posTemp.y-pos.y>V_LEN) || (posTemp.y-pos.y)<-V_LEN) ) {
             pos.add(v);
         }
         else pos.set(touch);
+
     }
 
     @Override
@@ -76,13 +77,9 @@ public class MenuScreen extends Base2DScreen{
         float len = (float) Math.sqrt(dx*dx + dy*dy);
         float cos;
         float sin;
-        if (dx<0){
-            cos = -dx/len;
-        } else cos = dx/len;
-        if (dy<0){
-            sin = -dy/len;
-        } else sin = dy/len;
-        v = v.set(Math.signum(dx)*cos*V_LEN, Math.signum(dy)*sin*V_LEN);
+        cos = dx/len;
+        sin = dy/len;
+        v = v.set(cos*V_LEN, sin*V_LEN);
     }
 
 
