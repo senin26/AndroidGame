@@ -3,84 +3,97 @@ package com.mygdx.game.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import com.mygdx.game.base.Base2DScreen;
+import com.mygdx.game.math.Rect;
+import com.mygdx.game.sprite.Background;
+import com.mygdx.game.sprite.Button;
+import com.mygdx.game.sprite.Star;
 
 public class MenuScreen extends Base2DScreen{
 
     private static final float V_LEN = 0.002f;
 
-    Texture img;
-    Texture background;
-
-    Vector2 pos;
-    Vector2 v;
-    Vector2 posTemp;
-    Vector2 touch;
-    float boundX;
-    float boundY;
+    private TextureAtlas atlas;
+    private TextureAtlas atlasBtns;
+    private Texture bg;
+    private Texture exitTexture;
+    private Texture playTexture;
+    private Background background;
+    private Button play;
+    private Button close;
+    private Star[] stars;
 
     @Override
     public void show() {
         super.show();
-        background = new Texture("background.jpg");
-        img = new Texture("cat.jpg");
-        pos = new Vector2(-0.5f, -0.5f);
-        touch = new Vector2(-0.5f, -0.5f);
-        posTemp = new Vector2();
-        v = new Vector2(0f, 0f);
+        bg = new Texture("textures/background.jpg");
+        atlas = new TextureAtlas("textures/menuAtlas.tpack");
+        atlasBtns = new TextureAtlas("textures/PlayEtExitBtn.pack");
+        background = new Background(new TextureRegion(bg));
+        play = new Button(atlasBtns, "play");
+        close = new Button(atlasBtns, "close");
+        stars = new Star[256];
+        for (int i = 0; i < stars.length; i++) {
+            stars[i] = new Star(atlas);
+        }
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-        Gdx.gl.glClearColor(0.5f, 0.2f, 0.3f, 1);
+        update(delta);
+        draw();
+        if (close.isMe(getTouch())){
+            close.action();
+        }
+        else if (play.isMe(getTouch())){
+            play.action();
+        }
+    }
+
+    public void update(float delta){
+        for (int i = 0; i < stars.length; i++) {
+            stars[i].update(delta);
+        }
+    }
+
+    public void draw(){
+        Gdx.gl.glClearColor(0.2f, 0.5f, 0.3f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(background, -0.5f, -0.5f, 1f, 1f);
-        batch.draw(img, pos.x, pos.y, 0.25f, 0.25f);
-        batch.end();
-        posTemp.set(touch);
-
-        if ( ((posTemp.x-pos.x)>V_LEN || (posTemp.x-pos.x)<-V_LEN) || ((posTemp.y-pos.y>V_LEN) || (posTemp.y-pos.y)<-V_LEN) ) {
-            pos.add(v);
+        background.draw(batch);
+        play.draw(batch);
+        close.draw(batch);
+        for (int i = 0; i < stars.length; i++) {
+            stars[i].draw(batch);
         }
-        else pos.set(touch);
-
+        batch.end();
     }
 
     @Override
-    public void resize(int width, int height) {
-        super.resize(width, height);
+    public void resize(Rect worldBounds) {
+        background.resize(worldBounds);
+        play.resize(worldBounds);
+        close.resize(worldBounds);
+        for (int i = 0; i < stars.length; i++) {
+            stars[i].resize(worldBounds);
+        }
     }
 
     @Override
     public void dispose() {
-        img.dispose();
+        bg.dispose();
+        atlas.dispose();
         super.dispose();
     }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        this.touch = touch;
-        boundX = touch.x;
-        boundY = touch.y;
-        setV(pos.x, touch.x, pos.y, touch.y);
         return super.touchDown(touch, pointer);
     }
-
-    void setV(float x0, float x, float y0, float y){
-
-        float dx = x-x0;
-        float dy = y-y0;
-        float len = (float) Math.sqrt(dx*dx + dy*dy);
-        float cos;
-        float sin;
-        cos = dx/len;
-        sin = dy/len;
-        v = v.set(cos*V_LEN, sin*V_LEN);
-    }
-
 
 }

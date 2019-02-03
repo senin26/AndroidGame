@@ -12,7 +12,7 @@ import com.mygdx.game.math.MatrixUtils;
 import com.mygdx.game.math.Rect;
 
 
-public class Base2DScreen implements Screen, InputProcessor {
+public abstract class Base2DScreen implements Screen, InputProcessor {
 
     protected SpriteBatch batch;
 
@@ -40,7 +40,6 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-
     }
 
     @Override
@@ -57,6 +56,11 @@ public class Base2DScreen implements Screen, InputProcessor {
         MatrixUtils.calcTransitionMatrix(worldToGl, worldBounds, glBounds);
         batch.setProjectionMatrix(worldToGl);
         MatrixUtils.calcTransitionMatrix(screenToWorlds, screenBounds, worldBounds);
+        resize(worldBounds);
+    }
+
+    public void resize(Rect worldBounds){
+
     }
 
     @Override
@@ -147,5 +151,9 @@ public class Base2DScreen implements Screen, InputProcessor {
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+
+    public Vector2 getTouch() {
+        return touch;
     }
 }
