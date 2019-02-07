@@ -1,47 +1,37 @@
 package com.mygdx.game.screen;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-
 import com.mygdx.game.base.Base2DScreen;
 import com.mygdx.game.math.Rect;
+import com.mygdx.game.pool.BulletPool;
 import com.mygdx.game.sprite.Background;
-import com.mygdx.game.sprite.ButtonClose;
-import com.mygdx.game.sprite.ButtonPlay;
 import com.mygdx.game.sprite.Star;
+import com.mygdx.game.sprite.game.MainShip;
 
-public class MenuScreen extends Base2DScreen{
+public class GameScreen extends Base2DScreen {
 
-    private Game game;
-
-    private TextureAtlas atlas;
-    private TextureAtlas atlasBtns;
-    private Texture bg;
-    private Texture exitTexture;
-    private Texture playTexture;
-    private Background background;
-    private ButtonPlay btnPlay;
-    private ButtonClose btnClose;
+    Texture bg;
+    Background background;
+    TextureAtlas atlas;
+    TextureAtlas mainAtlas;
     private Star[] stars;
-
-    public MenuScreen(Game game) {
-        this.game = game;
-    }
+    MainShip mainShip;
+    BulletPool bulletPool;
 
     @Override
     public void show() {
         super.show();
         bg = new Texture("textures/background.jpg");
         atlas = new TextureAtlas("textures/menuAtlas.tpack");
-        atlasBtns = new TextureAtlas("textures/PlayEtExitBtn.pack");
+        mainAtlas = new TextureAtlas("textures/mainAtlas.tpack");
         background = new Background(new TextureRegion(bg));
-        btnClose = new ButtonClose(atlasBtns);
-        btnPlay = new ButtonPlay(atlasBtns,game);
+        bulletPool = new BulletPool();
+        mainShip = new MainShip(mainAtlas, bulletPool);
         stars = new Star[100];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
@@ -52,6 +42,7 @@ public class MenuScreen extends Base2DScreen{
     public void render(float delta) {
         super.render(delta);
         update(delta);
+        deleteAllDestroyed();
         draw();
     }
 
@@ -59,6 +50,12 @@ public class MenuScreen extends Base2DScreen{
         for (int i = 0; i < stars.length; i++) {
             stars[i].update(delta);
         }
+        mainShip.update(delta);
+        bulletPool.updateActiveSprites(delta);
+    }
+
+    public void deleteAllDestroyed(){
+        bulletPool.freeAllDestroyedEmptySrites();
     }
 
     public void draw(){
@@ -66,8 +63,8 @@ public class MenuScreen extends Base2DScreen{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
-        btnPlay.draw(batch);
-        btnClose.draw(batch);
+        mainShip.draw(batch);
+        bulletPool.drawActiveSprites(batch);
         for (int i = 0; i < stars.length; i++) {
             stars[i].draw(batch);
         }
@@ -76,9 +73,9 @@ public class MenuScreen extends Base2DScreen{
 
     @Override
     public void resize(Rect worldBounds) {
+        //super.resize(worldBounds);
         background.resize(worldBounds);
-        btnPlay.resize(worldBounds);
-        btnClose.resize(worldBounds);
+        mainShip.resize(worldBounds);
         for (int i = 0; i < stars.length; i++) {
             stars[i].resize(worldBounds);
         }
@@ -88,20 +85,31 @@ public class MenuScreen extends Base2DScreen{
     public void dispose() {
         bg.dispose();
         atlas.dispose();
+        bulletPool.dispose();
         super.dispose();
     }
 
     @Override
+    public boolean keyDown(int keycode) {
+        mainShip.keyDown(keycode);
+        return super.keyDown(keycode);
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        mainShip.keyUp(keycode);
+        return super.keyUp(keycode);
+    }
+
+    @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        btnClose.touchDown(touch, pointer);
-        btnPlay.touchDown(touch, pointer);
+        mainShip.touchDown(touch, pointer);
         return super.touchDown(touch, pointer);
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
-        btnClose.touchUp(touch, pointer);
-        btnPlay.touchUp(touch, pointer);
+        mainShip.touchUp(touch, pointer);
         return super.touchUp(touch, pointer);
     }
 }
