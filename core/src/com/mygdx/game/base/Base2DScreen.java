@@ -63,6 +63,10 @@ public abstract class Base2DScreen implements Screen, InputProcessor {
 
     }
 
+    public Rect getWorldBounds() {
+        return worldBounds;
+    }
+
     @Override
     public void pause() {
         System.out.println("pause");

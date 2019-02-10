@@ -22,11 +22,11 @@ public class MenuScreen extends Base2DScreen{
     private TextureAtlas atlas;
     private TextureAtlas atlasBtns;
     private Texture bg;
-    private Texture exitTexture;
-    private Texture playTexture;
     private Background background;
+
     private ButtonPlay btnPlay;
     private ButtonClose btnClose;
+
     private Star[] stars;
 
     public MenuScreen(Game game) {
@@ -37,9 +37,9 @@ public class MenuScreen extends Base2DScreen{
     public void show() {
         super.show();
         bg = new Texture("textures/background.jpg");
+        background = new Background(new TextureRegion(bg));
         atlas = new TextureAtlas("textures/menuAtlas.tpack");
         atlasBtns = new TextureAtlas("textures/PlayEtExitBtn.pack");
-        background = new Background(new TextureRegion(bg));
         btnClose = new ButtonClose(atlasBtns);
         btnPlay = new ButtonPlay(atlasBtns,game);
         stars = new Star[100];

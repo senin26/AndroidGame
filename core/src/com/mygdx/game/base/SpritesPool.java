@@ -1,6 +1,7 @@
 package com.mygdx.game.base;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.math.Rect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,14 +37,20 @@ public abstract class SpritesPool<T extends Sprite> {
         }
     }
 
-    public void freeAllDestroyedEmptySrites(){
+    public void resizeActiveSprites(Rect worldBounds) {
+        for (int i = 0; i < activeObjects.size(); i++) {
+            T sprite = activeObjects.get(i);
+            sprite.resize(worldBounds);
+        }
+    }
+
+    public void freeAllDestroyedActiveSprites(){
         for (int i = 0; i < activeObjects.size(); i++) {
             T sprite = activeObjects.get(i);
             if (sprite.isDestroyed()) {
                 free(sprite);
                 i--;
             }
-
         }
     }
 

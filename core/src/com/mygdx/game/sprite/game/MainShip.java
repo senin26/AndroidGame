@@ -1,6 +1,8 @@
 package com.mygdx.game.sprite.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -20,14 +22,21 @@ public class MainShip extends Sprite {
     private boolean isRightClckMove;
     private boolean isLeftClckMove;
 
-    private BulletPool bulletPool;
     private TextureRegion bulletRegion;
+    private BulletPool bulletPool;
+
+    private float reloadInterval;
+    private float reloadTimer;
+
+    private Sound shootSound;
 
     public MainShip(TextureAtlas atlas, BulletPool bulletPool) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
-        setHeightProportion(0.15f);
         this.bulletRegion = atlas.findRegion("bulletMainShip");
         this.bulletPool = bulletPool;
+        this.reloadInterval = 0.2f;
+        this.shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+        setHeightProportion(0.15f);
     }
 
     @Override
@@ -40,6 +49,11 @@ public class MainShip extends Sprite {
     @Override
     public void update(float delta) {
         super.update(delta);
+        reloadTimer += delta;
+        if (reloadTimer >= reloadInterval) {
+            reloadTimer = 0f;
+            //shoot(); //todo you can uncomment it and comment 93-96
+        }
         if (pos.x > (worldBounds.getLeft()+getHalfWidth())) {
             pos.mulAdd(v, delta);
         } else {
@@ -68,13 +82,13 @@ public class MainShip extends Sprite {
         switch (keycode) {
             case Input.Keys.A:
             case Input.Keys.LEFT:
-                moveLeft();
                 isPressedLeft = true;
+                moveLeft();
                 break;
             case Input.Keys.D:
             case Input.Keys.RIGHT:
-                moveRight();
                 isPressedRight = true;
+                moveRight();
                 break;
             case Input.Keys.W:
             case Input.Keys.UP:
@@ -143,8 +157,15 @@ public class MainShip extends Sprite {
         return false;
     }
 
+    public void dispose() {
+        shootSound.dispose();
+    }
+
     private void shoot(){
+        shootSound.play();
         Bullet bullet = bulletPool.obtain();
         bullet.set(this, bulletRegion, pos.cpy().add(new Vector2(0f, -pos.cpy().y*0.175f)), new Vector2(0, 0.5f), 0.01f, worldBounds, 1);
     }
+
+
 }
