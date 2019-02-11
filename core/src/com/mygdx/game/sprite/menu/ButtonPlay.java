@@ -12,7 +12,7 @@ public class ButtonPlay extends ScaledTouchUpButton {
     private Game game;
 
     public ButtonPlay(TextureAtlas atlas, Game game) {
-        super(atlas.findRegion("btPlay"));
+        super(atlas.findRegion("play"));
         this.game = game;
         setHeightProportion(0.15f);
     }
