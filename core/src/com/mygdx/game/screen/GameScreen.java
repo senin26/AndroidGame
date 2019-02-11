@@ -66,7 +66,7 @@ public class GameScreen extends Base2DScreen {
         music.setLooping(true);
         music.setVolume(0.8f);
         music.play();
-        bg = new Texture("textures/bg.png");
+        bg = new Texture("textures/background.jpg");
         background = new Background(new TextureRegion(bg));
         atlas = new TextureAtlas("textures/mainAtlas.tpack");
         star = new Star[64];
