@@ -10,7 +10,7 @@ import com.mygdx.game.pool.ScaledTouchUpButton;
 public class ButtonExit extends ScaledTouchUpButton {
 
     public ButtonExit(TextureAtlas atlas) {
-        super(atlas.findRegion("btExit"));
+        super(atlas.findRegion("close"));
         setHeightProportion(0.15f);
     }
 
