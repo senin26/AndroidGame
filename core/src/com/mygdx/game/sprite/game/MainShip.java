@@ -54,10 +54,10 @@ public class MainShip extends Ship {
         super.update(delta);
         pos.mulAdd(v, delta);
         reloadTimer += delta;
-        if (reloadTimer >= reloadInterval) {
+        /*if (reloadTimer >= reloadInterval) {
             reloadTimer = 0f;
             shoot();
-        }
+        }*/
         if (getRight() > worldBounds.getRight()) {
             setRight(worldBounds.getRight());
             stop();
@@ -79,6 +79,10 @@ public class MainShip extends Ship {
             case Input.Keys.RIGHT:
                 isPressedRight = true;
                 moveRight();
+                break;
+            case Input.Keys.W:
+            case Input.Keys.UP:
+                shoot();
                 break;
         }
         return false;
@@ -168,4 +172,10 @@ public class MainShip extends Ship {
         v.setZero();
     }
 
+    @Override
+    public void shoot(){
+        shootSound.play();
+        Bullet bullet = bulletPool.obtain();
+        bullet.set(this, bulletRegion, pos.cpy().add(new Vector2(0f, getHalfHeight())), new Vector2(0, 0.5f), 0.01f, worldBounds, 1);
+    }
 }
